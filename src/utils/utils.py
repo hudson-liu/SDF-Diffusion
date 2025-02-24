@@ -310,3 +310,11 @@ def infinite_dataloader(dl, n_iters=inf):
             if step > n_iters:
                 keep = False
                 break
+
+def get_device():
+    """Get the available accelerator device."""
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    elif torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
