@@ -317,6 +317,7 @@ class GaussianDiffusion(nn.Module):
         log_every_t=5,
         show_pbar=False,
         pbar_kwargs={},
+        x0_guidance_fn=None,
     ):
         assert hasattr(self, "ddim_timesteps"), "ddim parameters are not initialized"
         rankzero = not dist.is_initialized() or dist.get_rank() == 0
@@ -356,6 +357,19 @@ class GaussianDiffusion(nn.Module):
             pred_x0 = (x - sqrt_one_minus_at * e_t) / a_t.sqrt()
             if clip_denoised:
                 pred_x0.clamp_(-1.0, 1.0)
+            if x0_guidance_fn is not None:
+                guided_x0 = x0_guidance_fn(
+                    pred_x0,
+                    {
+                        "inference_step": i,
+                        "ddim_index": index,
+                        "scheduler_step": int(step),
+                        "total_steps": total_steps,
+                        "noise_level": noise_level,
+                    },
+                )
+                if guided_x0 is not None:
+                    pred_x0 = guided_x0
             if index % log_every_t == 0 or index == total_steps - 1:
                 intermediates.append(pred_x0)
 
