@@ -13,7 +13,6 @@ from src import trainer
 from src.datasets.const import synset_to_taxonomy
 from src.models.utils import ema
 from src.utils import instantiate_from_config
-from src.utils.vis import make_meshes_grid, sdfs_to_meshes_np
 
 
 class GEN3dPreprocessor(trainer.BasePreprocessor):
@@ -144,6 +143,8 @@ class GEN3dTrainer(trainer.BaseTrainer):
 
     @th.no_grad()
     def sample(self):
+        from src.utils.vis import make_meshes_grid, sdfs_to_meshes_np
+
         self.model_optim.eval()
 
         outdir = self.args.exp_path / "samples" / f"e{self.epoch:04d}"

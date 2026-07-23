@@ -16,7 +16,6 @@ from src.models.utils import ema
 from src.utils import instantiate_from_config
 from src.utils.algebra import gaussian_blur
 from src.utils.folding2d import get_fold_unfold
-from src.utils.vis import make_meshes_grid, sdfs_to_meshes_np
 
 
 class SR3dPreprocessor(trainer.BasePreprocessor):
@@ -233,6 +232,8 @@ class SR3dTrainer(trainer.BaseTrainer):
 
     @th.no_grad()
     def sample(self):
+        from src.utils.vis import make_meshes_grid, sdfs_to_meshes_np
+
         self.model_optim.eval()
 
         outdir = self.args.exp_path / "samples" / f"e{self.epoch:04d}"
