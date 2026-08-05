@@ -370,6 +370,8 @@ class GaussianDiffusion(nn.Module):
                 )
                 if guided_x0 is not None:
                     pred_x0 = guided_x0
+                    # Re-derive epsilon from the guided x_0 for the DDIM step.
+                    e_t = self.predict_noise_from_start(x, ts, pred_x0)
             if index % log_every_t == 0 or index == total_steps - 1:
                 intermediates.append(pred_x0)
 
