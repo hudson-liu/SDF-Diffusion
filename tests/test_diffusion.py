@@ -29,6 +29,7 @@ def test_ddim_conditions_denoiser_on_transition_noise_level():
         clip_denoised=False,
     )
 
+    np.testing.assert_array_equal(diffusion.ddim_timesteps, np.arange(0, 10, 2))
     steps = np.flip(diffusion.ddim_timesteps).copy()
     expected = torch.sqrt(diffusion.alphas_cumprod[torch.as_tensor(steps)]).numpy()
     np.testing.assert_allclose(observed, expected, rtol=1e-6, atol=0)

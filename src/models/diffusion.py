@@ -66,9 +66,9 @@ def make_ddim_timesteps(ddim_discr_method, num_ddim_timesteps, num_ddpm_timestep
     else:
         raise NotImplementedError(f'There is no ddim discretization method called "{ddim_discr_method}"')
 
-    # assert ddim_timesteps.shape[0] == num_ddim_timesteps
-    # add one to get the final alpha values right (the ones from first scale to data during sampling)
-    steps_out = ddim_timesteps + 1
+    # Keep indices zero-based so the transition alpha and the continuous
+    # denoiser noise level refer to the same forward-process state.
+    steps_out = ddim_timesteps
     if verbose:
         print(f"Selected timesteps for ddim sampler: {steps_out}")
     return steps_out
