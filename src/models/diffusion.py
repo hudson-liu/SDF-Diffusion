@@ -342,7 +342,10 @@ class GaussianDiffusion(nn.Module):
         for i, step in enumerate(pbar):
             index = total_steps - i - 1
             ts = th.full((b,), step, device=dev, dtype=th.long)
-            noise_level = self.sqrt_alphas_cumprod_prev[ts]
+            # ``a_t`` below is alpha_cumprod[step], so condition the denoiser
+            # on that same noise level.  The leading 1 in the ``*_prev``
+            # lookup table shifts the matching entry to ``step + 1``.
+            noise_level = self.sqrt_alphas_cumprod_prev[ts + 1]
 
             e_t = post_fn(denoise_fn(x, noise_level, **denoise_kwargs))
             if self.model_mean_type == "x_0":
